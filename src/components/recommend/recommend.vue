@@ -12,6 +12,7 @@
                                             <img :src="item.picUrl" alt="">
                                         </a>
                                     </li>
+                                    
                             </slider> 
                      
                 
