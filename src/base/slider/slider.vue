@@ -44,7 +44,7 @@ import BScroll from 'better-scroll'
         methods:{
           _setSliderWidth(){
             this.children = this.$refs.sliderGroup.children;
-            // console.log( this.children)
+            console.log( this.children)
        
               let width = 0
               let sliderWidth = this.$refs.slider.clientWidth
