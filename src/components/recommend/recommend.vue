@@ -12,7 +12,7 @@
                                             <img :src="item.picUrl" alt="">
                                         </a>
                                     </li>
-                                    
+
                             </slider> 
                      
                 
@@ -106,4 +106,15 @@
         width: 100%
         top: 50%
         transform: translateY(-50%)
+
+
+
+
+
+
+
+
+
+
+       
 </style>
