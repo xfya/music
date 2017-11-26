@@ -1,21 +1,21 @@
 <template>
 
-    <div class='recommend'>
+    <div class='recommend' ref="recommend">
          <div class="recommend-content">
-            <div class="recommend-list">
-                <h1 class="list-title">热门歌单推荐</h1>
-             
-                    <ul v-if="recomends.length">
-                          <slider>
-                                <li v-for = "(item,index) in recomends" :key="index">
+            <div>
+                <div v-if='recomends.length'  class="slider-wrapper">
+                
+                            <slider>
+                                    <li v-for = "(item,index) in recomends" :key="index">
 
-                                    <a :href="item.linkUrl">
-                                        <img :src="item.picUrl" alt="">
-                                    </a>
-                                </li>
-                           </slider> 
-                    </ul>
-             
+                                        <a :href="item.linkUrl">
+                                            <img :src="item.picUrl" alt="">
+                                        </a>
+                                    </li>
+                            </slider> 
+                     
+                
+                </div>
             </div>
         </div>
     </div>
