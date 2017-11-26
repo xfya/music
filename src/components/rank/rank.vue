@@ -1,7 +1,7 @@
 <template>
 
     <div class='rank'>
-rank
+        rank
     </div>
 
  </template>
