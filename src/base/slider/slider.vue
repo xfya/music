@@ -4,6 +4,14 @@
           <div class="slider-group" ref="sliderGroup">
             <slot></slot>
           </div>
+          <div class= "dots">
+            <span class="dot"  v-for="(item, index) in dots" :key="index" 
+              :class="{active: currentPageIndex === index}"
+            
+            ></span>
+          </div>
+
+       
     </div>
 
  </template>
@@ -13,10 +21,18 @@ import BScroll from 'better-scroll'
   import { addClass } from 'common/js/dom'
 
     export default {
-      props:{
-         loop: {
-        type: Boolean,
-        default: true
+  
+        data() {
+            return {
+              dots:[],
+              currentPageIndex:0
+
+            }
+        },
+        props:{
+           loop: {
+          type: Boolean,
+          default: true
         },
         autoPlay: {
           type: Boolean,
@@ -24,25 +40,31 @@ import BScroll from 'better-scroll'
         },
         interval: {
           type: Number,
-          default: 3000
+          default: 300
         }
 
       },
-        data() {
-            return {
-
-
-            }
-        },
         mounted(){
           setTimeout(()=>{
             this._setSliderWidth()
+            this._initDots()
             this._initSlider()
-
+            if(this.autoPlay){
+               this._play()
+            }
+                 
           })
+
+           window.addEventListener('resize', () => {
+                    if (!this.slider) return
+                    // 窗口改变的大小时重新计算clienWidth 此时不需要再加上两个多余的width
+                    this._setSliderWidth(true)
+                    // BScroll  重新计算
+                    this.slider.refresh()
+            })
         },
         methods:{
-          _setSliderWidth(){
+          _setSliderWidth(isResize){
             this.children = this.$refs.sliderGroup.children;
             console.log( this.children)
        
@@ -56,7 +78,7 @@ import BScroll from 'better-scroll'
                 child.style.width = sliderWidth + 'px'
                 width += sliderWidth
               }
-              if(this.loop){
+              if(this.loop && !isResize){
                 width += 2*sliderWidth
               }
 
@@ -73,6 +95,36 @@ import BScroll from 'better-scroll'
                 snapThreshold: 0.3,
                 snapSpeed: 400
               })
+              let  _this  = this
+              this.slider.on('scrollEnd',()=>{
+                
+                  let pageIndex = this.slider.getCurrentPage().pageX;
+                  // console.log(pageIndex)
+                   if (this.loop) {
+                      pageIndex -= 1
+                    }
+                     this.currentPageIndex = pageIndex
+                     if (this.autoPlay) {
+                        clearTimeout(this.timer)
+                        this._play()
+                      }
+              })
+          },
+          _initDots(){
+            this.dots = new Array(this.children.length)
+          },
+          _play(){
+            let pageIndex = this.currentPageIndex + 1 ;
+            if(this.loop){
+              pageIndex += 1
+            }  
+            this.timer = setTimeout(()=>{
+              this.slider.goToPage(pageIndex,0,400)
+            },this.interval)
+          },
+
+          destroyed() {
+            clearTimeout(this.timer)
           }
         }
     }
