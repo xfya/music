@@ -1,6 +1,6 @@
 <template>
 
-    <div class='slider' ref="slider">
+    <div class='slider clearfix' ref="slider">
           <div class="slider-group" ref="sliderGroup">
             <slot></slot>
           </div>
@@ -51,7 +51,7 @@ import BScroll from 'better-scroll'
               console.log(sliderWidth)
               for(let i = 0 ; i < this.children.length;i++) {
                 let child = this.children[i];
-                addClass(child,'slide-item');
+                addClass(child,'slider-item');
                 console.log(sliderWidth)
                 child.style.width = sliderWidth + 'px'
                 width += sliderWidth
@@ -80,51 +80,42 @@ import BScroll from 'better-scroll'
 
 <style scoped lang="stylus">
   @import "~common/stylus/variable"
-
-  .recommend
-    position: fixed
-    width: 100%
-    top: 88px
-    bottom: 0
-    .recommend-content
-      height: 100%
+ @import '~common/stylus/variable'
+  .slider
+    min-height: 1px
+    .slider-group
+      position: relative
       overflow: hidden
-      .slider-wrapper
-        position: relative
-        width: 100%
+      white-space: nowrap
+      .slider-item
+        float: left
+        box-sizing: border-box
         overflow: hidden
-      .recommend-list
-        .list-title
-          height: 65px
-          line-height: 65px
-          text-align: center
-          font-size: $font-size-medium
-          color: $color-theme
-        .item
-          display: flex
-          box-sizing: border-box
-          align-items: center
-          padding: 0 20px 20px 20px
-          .icon
-            flex: 0 0 60px
-            width: 60px
-            padding-right: 20px
-          .text
-            display: flex
-            flex-direction: column
-            justify-content: center
-            flex: 1
-            line-height: 20px
-            overflow: hidden
-            font-size: $font-size-medium
-            .name
-              margin-bottom: 10px
-              color: $color-text
-            .desc
-              color: $color-text-d
-      .loading-container
-        position: absolute
-        width: 100%
-        top: 50%
-        transform: translateY(-50%)
+        text-align: center
+        a
+          display: block
+          width: 100%
+          overflow: hidden
+          text-decoration: none
+        img
+          display: block
+          width: 100%
+    .dots
+      position: absolute
+      right: 0
+      left: 0
+      bottom: 12px
+      text-align: center
+      font-size: 0
+      .dot
+        display: inline-block
+        margin: 0 4px
+        width: 8px
+        height: 8px
+        border-radius: 50%
+        background: $color-text-l
+        &.active
+          width: 20px
+          border-radius: 5px
+          background: $color-text-ll
 </style>

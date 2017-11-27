@@ -6,12 +6,12 @@
                 <div v-if='recomends.length'  class="slider-wrapper">
                 
                             <slider>
-                                    <li v-for = "(item,index) in recomends" :key="index">
+                                    <div class="aaa" v-for = "(item,index) in recomends" :key="index">
 
                                         <a :href="item.linkUrl">
-                                            <img :src="item.picUrl" alt="">
+                                            <img class="needsclick"  :src="item.picUrl" alt="">
                                         </a>
-                                    </li>
+                                    </div>
 
                             </slider> 
                      
