@@ -17,6 +17,21 @@
                      
                 
                 </div>
+
+                    <div class="recommend-list">
+                        <h1 class="list-title">热门歌单推荐</h1>
+                        <ul>
+                             <li v-for="item in discList" class="item" :key="item.key">
+                                     <div class="icon">
+                                        <img :src="item.imgurl" width="60" height="60" alt="">
+                                    </div>
+                                    <div class="text">
+                                        <h2 class="name" v-html="item.creator.name"></h2>
+                                        <p class="desc" v-html="item.dissname"></p>
+                                    </div>
+                             </li>
+                        </ul>
+                   </div>
             </div>
         </div>
     </div>
@@ -25,20 +40,22 @@
 
 <script>
     import Slider from 'base/slider/slider'
-    import {getRecommend}  from 'api/recommend.js'
+    import {getRecommend, getDiscList}  from 'api/recommend.js'
     import {ERR_OK} from 'api/config'
-
+    import axios from 'axios'
 
     export default {
 
         data() {
             return {
 
-                recomends:[]
+                recomends:[],
+                discList:[]
             }
         },
         created(){
             this._getRecommend()
+            this._getDiscList()
 
         },
         methods:{
@@ -49,7 +66,20 @@
                         this.recomends = res.data.slider
                    }
                 })
-            }
+            },
+            _getDiscList() {
+                // console.log(2)
+            //    this.discList =  getDiscList()
+               
+                // getDiscList().then(res => {
+                // console.log(res) 
+                // })
+
+                axios.get('http://localhost:3002/api/getDiscList?g_tk=5381&notice=0&inCharset=utf8&outCharset=utf-8&platform=yqq&hostUin=0&sin=0&ein=29&sortId=5&categoryId=10000000&needNewCode=0&rnd=0.9071911352531421&format=json&jsonpCallback=tan1')
+                .then(res=>{
+                    this.discList = res.data.data.list
+                })
+},
         },
         components:{
             Slider

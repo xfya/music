@@ -14,6 +14,12 @@ Vue.config.productionTip = false
 import './common/stylus/index.styl'
 
 
+Vue.filter('filters', function(value, start, end) {
+    // 返回处理后的值
+    return value.slice(start, end)
+})
+
+
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

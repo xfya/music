@@ -40,7 +40,7 @@ import BScroll from 'better-scroll'
         },
         interval: {
           type: Number,
-          default: 300
+          default: 3000
         }
 
       },

@@ -1,7 +1,8 @@
 <template>
 
     <div class=''>
-        singer
+        {{parentid[0].slice(0,5)}}
+        <p>{{datas | filters(0,5)}}</p>
     </div>
 
  </template>
@@ -12,9 +13,12 @@
 
         data() {
             return {
-
+            parentid:['123456789']
 
             }
+        },
+        created(){
+            this.datas = 'xfa123456'
         }
     }
 </script>
