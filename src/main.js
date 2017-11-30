@@ -6,6 +6,16 @@ import router from './router'
 import 'babel-polyfill'
 import fastclick from 'fastclick'
 fastclick.attach(document.body)
+    // 图片懒加载实现
+import VueLazyload from 'vue-lazyload'
+
+Vue.use(VueLazyload, {
+
+    loading: require('./components/m-header/logo@2x.png'),
+
+})
+
+
 
 
 Vue.config.productionTip = false

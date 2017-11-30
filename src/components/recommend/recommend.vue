@@ -1,7 +1,7 @@
 <template>
 
     <div class='recommend' ref="recommend">
-         <scroll class="recommend-content">
+         <scroll class="recommend-content" ref="scroll"  :data='discList'>
             <div>
                 <div v-if='recomends.length'  class="slider-wrapper">
                 
@@ -9,7 +9,7 @@
                                     <div class="aaa" v-for = "(item,index) in recomends" :key="index">
 
                                         <a :href="item.linkUrl">
-                                            <img class="needsclick"  :src="item.picUrl" alt="">
+                                            <img   @load="loadImage"  class="needsclick"  :src="item.picUrl" alt="">
                                         </a>
                                     </div>
 
@@ -23,7 +23,7 @@
                         <ul>
                              <li v-for="item in discList" class="item" :key="item.key">
                                      <div class="icon">
-                                        <img :src="item.imgurl" width="60" height="60" alt="">
+                                        <img  v-lazy="item.imgurl" width="60" height="60" alt="">
                                     </div>
                                     <div class="text">
                                         <h2 class="name" v-html="item.creator.name"></h2>
@@ -32,6 +32,9 @@
                              </li>
                         </ul>
                    </div>
+            </div>
+            <div class="loading-container" v-show="!discList.length">
+                <loading></loading>
             </div>
         </scroll>
     </div>
@@ -44,6 +47,7 @@
     import {getRecommend, getDiscList}  from 'api/recommend.js'
     import {ERR_OK} from 'api/config'
     import axios from 'axios'
+    import Loading from 'base/loading'
 
     export default {
 
@@ -80,11 +84,19 @@
                 .then(res=>{
                     this.discList = res.data.data.list
                 })
-},
+          
+            },
+            loadImage(){
+                        if (!this.checkedload) {
+                            this.$refs.scroll.refresh()
+                            this.checkedload = true
+                        }
+            },
         },
         components:{
             Slider,
-            Scroll
+            Scroll,
+            Loading
         }
     }
 </script>

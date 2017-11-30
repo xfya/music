@@ -66,15 +66,15 @@ import BScroll from 'better-scroll'
         methods:{
           _setSliderWidth(isResize){
             this.children = this.$refs.sliderGroup.children;
-            console.log( this.children)
+            // console.log( this.children)
        
               let width = 0
               let sliderWidth = this.$refs.slider.clientWidth;
-              console.log(sliderWidth)
+              // console.log(sliderWidth)
               for(let i = 0 ; i < this.children.length;i++) {
                 let child = this.children[i];
                 addClass(child,'slider-item');
-                console.log(sliderWidth)
+                // console.log(sliderWidth)
                 child.style.width = sliderWidth + 'px'
                 width += sliderWidth
               }

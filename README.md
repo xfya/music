@@ -99,8 +99,21 @@ beforeDestroy
 实例销毁之前调用。在这一步，实例仍然完全可用。
 destroyed
 
-Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。 该钩子在服务器端渲染期间不被调用。
+ Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。 该钩子在服务器端渲染期间不被调用。
 
 
 ###  BScroll  中 需要用  js  来控制css  样式    addClass(child,'slider-item');
+
+
+
+###  js  中 引入图片    loading: require('./components/m-header/logo@2x.png')
+
+
+###  当betterScroll  和 fastclick  冲突的时候可以给图片加个 class="needsclick"  来解决
+
+### Promise.resolve(value)方法返回一个以给定值解析后的Promise对象。但如果这个值是个thenable（即带有then方法），返回的promise会“跟随”这个thenable的对象，采用它的最终状态（指resolved/rejected/pending/settled）；否则以该值为成功状态返回promise对象
+
+
+
+
 
