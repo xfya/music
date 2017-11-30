@@ -1,7 +1,7 @@
 <template>
 
-    <div class=''>
-        {{singers}}
+    <div class='singer'>
+        <singer-list :data="singers"  ref="list"></singer-list>
     </div>
 
  </template>
@@ -10,6 +10,7 @@
     import { getSingerList } from 'api/singer'
     import { ERR_OK } from 'api/config'
     import Singer from 'common/js/singer'
+    import SingerList from 'base/listview/listview'
     const HOT_NAME = '热门'
     const HOT_SINGER_LEN = 10
     export default {
@@ -22,6 +23,9 @@
         },
         created(){
            this._getSingerList()
+        },
+        components:{
+            SingerList
         },
         methods:{
             _getSingerList(){

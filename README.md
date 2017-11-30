@@ -113,7 +113,17 @@ destroyed
 
 ### Promise.resolve(value)方法返回一个以给定值解析后的Promise对象。但如果这个值是个thenable（即带有then方法），返回的promise会“跟随”这个thenable的对象，采用它的最终状态（指resolved/rejected/pending/settled）；否则以该值为成功状态返回promise对象
 
+### 用最简洁的代码实现数组去重。
 
+ES6实现：
+
+[...new Set([1,2,3,1,'a',1,'a'])]
+
+ES5实现：
+
+[1,2,3,1,'a',1,'a'].filter(function(ele,index,array){
+    return index===array.indexOf(ele)
+})
 
 
 
