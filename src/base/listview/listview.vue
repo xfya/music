@@ -1,6 +1,11 @@
 <template>
 
-    <scroll :data = data class='list-view'>
+    <scroll :data = data class='list-view'
+         ref="listView"
+         :listenScroll = 'listenScroll'
+         :probeType = 'probeType'
+         @scroll = 'scroll'
+    >
         <ul>
             <li v-for="group in data" class="list-group" :key="group.key" ref="listGroup">
                 <h2 class="list-group-title"> {{group.title}} </h2>
@@ -12,13 +17,17 @@
                 </ul>
             </li>
         </ul>
-        <div class="list-shortcut">
+        <div class="list-shortcut"
+            @touchstart="onShortcutTouchStart"
+            @touchmove.stop.prevent="onShortcutTouchMove"
+        >
 
                 <ul>
+                    {{currentIndex}}
                     <li class="item" v-for="(item, index) in shortcutList" 
                     :data-index="index" 
                     :key="item.key"
-                   
+                    :class="{'current' : currentIndex === index}"
                     >
                     {{item}}
                     </li>
@@ -32,6 +41,11 @@
 
 <script>
     import Scroll from 'base/scroll/scroll'
+    
+    import { getData } from 'common/js/dom'
+
+    const ANCHOR_HEIGHT = 18
+    const TITLE_HEIGHT = 30
     export default {
         props:{
             data:{
@@ -41,7 +55,8 @@
         },
         data() {
             return {
-
+                scrollY: -1,
+                currentIndex:0,
 
             }
         },
@@ -51,12 +66,93 @@
                 return group.title.substr(0, 1)
                 })
             },
+            
 
         },
+        created(){
+            this.touch = {};
+             this.listenScroll = true
+             this.listHeight = []
+              this.probeType = 3
+        },
+        methods:{
+            onShortcutTouchStart(e){
+               let   firstTouch = e.touches[0]
+               this.touch.y1 = firstTouch.pageY
 
+               let  anchorIndex = getData(e.target,'index')  
+            //    console.log(anchorIndex)
+              
+                this.touch.anchorIndex = anchorIndex
+                this._scrollTo(anchorIndex)
+          },
+            onShortcutTouchMove(e){
+                let   firstTouch = e.touches[0]
+                this.touch.y2 = firstTouch.pageY
+
+                let delta =( this.touch.y2- this.touch.y1)/ANCHOR_HEIGHT |0 ;
+                //  |0 表示向下取整
+
+                 let  anchorIndex = this.touch.anchorIndex - 0  + delta
+                 this._scrollTo(anchorIndex)    
+
+
+            },
+            _scrollTo(anchorIndex){
+                // scrollToElement   第二个参数的含义  是否需要一个缓动的时间
+                  this.$refs.listView.scrollToElement(this.$refs.listGroup[anchorIndex],0)
+            },
+            scroll(pos){
+                this.scrollY =pos.y
+            },
+            calcHeight(){
+                 this.listHeight = []
+                 const  list = this.$refs.listGroup
+                 let  height = 0 ;
+                 this.listHeight.push(height)
+
+                 for (let i = 0 ; i < list.length;i++){
+                     let  item = list[i];
+                     height += item.clientHeight
+                     this.listHeight.push(height)
+
+                 }
+            }
+        },
         components:{
             Scroll
-        }
+        },
+         watch: {
+            data() {
+                setTimeout(() => {
+                    this.calcHeight()
+                    }, 20)
+            },
+            scrollY(newY) {
+                const listHeight = this.listHeight
+                // top
+                if (newY > 0) {
+                this.currentIndex = 0
+                return
+                }
+                // middle
+                for (let i = 0; i < listHeight.length - 1; i++) {
+                let height1 = listHeight[i]
+                let height2 = listHeight[i + 1]
+                // 向上滚动srcollY的值为负 所以加上负号
+                if (-newY >= height1 && -newY < height2) {
+                    this.currentIndex = i
+                    this.diff = height2 + newY
+                    // console.log(this.diff)
+                    // console.log(this.currentIndex)
+                    return
+                }
+                }
+                // bottom
+
+                this.currentIndex = listHeight.length - 2
+            },
+         }
     }
 </script>
 
