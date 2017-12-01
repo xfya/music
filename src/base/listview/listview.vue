@@ -23,7 +23,7 @@
         >
 
                 <ul>
-                    {{currentIndex}}
+                 
                     <li class="item" v-for="(item, index) in shortcutList" 
                     :data-index="index" 
                     :key="item.key"
@@ -94,7 +94,8 @@
                 //  |0 表示向下取整
 
                  let  anchorIndex = this.touch.anchorIndex - 0  + delta
-                 this._scrollTo(anchorIndex)    
+                 this._scrollTo(anchorIndex)
+                  this.currentIndex =     anchorIndex
 
 
             },
