@@ -1,7 +1,11 @@
 <template>
 
     <div class='singer'>
-        <singer-list :data="singers"  ref="list"></singer-list>
+        <singer-list 
+        @select = "selectSinger"
+         :data="singers"  ref="list"></singer-list>
+
+           <router-view></router-view>
     </div>
 
  </template>
@@ -28,11 +32,16 @@
             SingerList
         },
         methods:{
+            selectSinger(singer){
+                this.$router.push({
+                    path:`/singer/${singer.id}`
+                })
+            },
             _getSingerList(){
                 getSingerList().then(res => {
                 if (res.code === ERR_OK) {
                     this.singers = this._normalizeSinger(res.data.list)
-                    console.log(this.singers)
+                    // console.log(this.singers)
               }
                 })
             },

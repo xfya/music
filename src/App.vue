@@ -2,9 +2,9 @@
   <div id="app">
       <MHeader></MHeader>
       <tap></tap>
-      <keep-alive>
+ 
         <router-view></router-view>
-      </keep-alive>
+   
   </div>
 </template>
 

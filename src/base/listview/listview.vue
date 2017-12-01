@@ -7,10 +7,21 @@
          @scroll = 'scroll'
     >
         <ul>
-            <li v-for="group in data" class="list-group" :key="group.key" ref="listGroup">
+            <li v-for="group in data" class="list-group"
+             :key="group.key" 
+            
+            
+            
+            
+          
+            
+            
+            ref="listGroup">
                 <h2 class="list-group-title"> {{group.title}} </h2>
                 <ul>
-                    <li  class="list-group-item" v-for="item in group.items" :key="item.key">
+                    <li 
+                          @click = 'selectItem(item)'
+                      class="list-group-item" v-for="item in group.items" :key="item.key">
                         <img v-lazy="item.avatar" alt="" class="avatar">
                         <span class="name"> {{item.name}} </span>
                     </li>
@@ -98,6 +109,9 @@
                   this.currentIndex =     anchorIndex
 
 
+            },
+            selectItem(index){
+            this.$emit('select',index) 
             },
             _scrollTo(anchorIndex){
                 // scrollToElement   第二个参数的含义  是否需要一个缓动的时间
