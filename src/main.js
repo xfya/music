@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import 'babel-polyfill'
+import store from './store'
 import fastclick from 'fastclick'
 fastclick.attach(document.body)
     // 图片懒加载实现
@@ -34,6 +35,7 @@ Vue.filter('filters', function(value, start, end) {
 new Vue({
     el: '#app',
     router,
+    store,
     template: '<App/>',
     components: { App }
 })
