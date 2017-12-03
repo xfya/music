@@ -1,7 +1,15 @@
 // 所有的状态文件
 // 111111111
+
+import { playMode } from 'common/js/config'
 const state = {
-    singer: {}
+    singer: {},
+    playing: false,
+    fullScreen: false,
+    playList: [],
+    sequenceList: [],
+    mode: playMode,
+    currentIndex: -1
 }
 
 
