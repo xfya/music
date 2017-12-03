@@ -28,7 +28,7 @@
                 <div class="song-list-wrapper">
                    <song-list 
                     :songs="songs" 
-                    
+                    @select="selectItem"
                     >
                     </song-list>   
                 </div>
@@ -46,6 +46,7 @@
     import Scroll from '@/base/scroll/scroll'
       import Loading from 'base/loading'
     import {prefixStyle} from 'common/js/dom'
+    import  {mapActions} from 'vuex'
     const transform = prefixStyle('transform')
     const RESERVED_HEIGHT = 40
    export default {
@@ -75,7 +76,20 @@
             },
             random(){
 
-            }
+            },
+            selectItem(item,index){
+                // 设置当前的playlist 和 sequencelist
+                //  根据点击的索引设置当前的歌曲
+                //   提交mutations   视图 提交 mutations
+                this.selectPlay({
+                    list:this.songs,
+                    index:index
+                })
+
+            },
+            ...mapActions([
+                'selectPlay'
+            ])
         },
         props:{
             bgImage: {

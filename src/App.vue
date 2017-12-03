@@ -4,18 +4,20 @@
       <tap></tap>
  
         <router-view></router-view>
-   
+        <player></player>
   </div>
 </template>
 
 <script>
 import MHeader from 'components/m-header/m-header.vue'
 import tap from 'components/tap/tap.vue'
+import Player from 'components/player/player'
 export default {
   name: 'app',
   components:{
     MHeader,
-    tap
+    tap,
+    Player
   }
 }
 </script>

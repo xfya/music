@@ -149,3 +149,11 @@ probeType: 1：滚动的时候会派发scroll事件，会截流。2：滚动的�
 ###  后退  this.$router.back()
 
 
+###  vue 中定义一个动画
+name-entery-active, name-leave-active{}
+
+
+name-enter,name-leave-to{}
+
+
+

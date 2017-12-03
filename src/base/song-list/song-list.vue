@@ -6,6 +6,7 @@
              v-for="(song, index) in songs"
              :key="song.key"
               class="item" 
+              @click = 'selectItem(song, index)'
             >
 
 
@@ -39,6 +40,9 @@
         methods:{
             getDesc(song){
                 return `${song.singer}·${song.album}`
+            },
+            selectItem(item,index){
+                this.$emit('select',item,index)
             }
         }
     }
