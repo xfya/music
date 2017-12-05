@@ -95,23 +95,23 @@
   
             <span class="time time-l">
   
-                        
+                        {{format(currentTime)}}
   
-                      </span>
+            </span>
   
             <!--播放进度条-->
   
             <div class="progress-bar-wrapper">
   
-  
-  
+              <progressbar :percent="percent"></progressbar>
+
             </div>
-  
+
             <span class="time time-r">
+              
+                     {{format(currentSong.duration)}} 
   
-                      
-  
-                      </span>
+            </span>
   
           </div>
   
@@ -223,7 +223,10 @@
   
   
   
-    <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error">
+    <audio :src="currentSong.url" ref="audio"
+     @canplay="ready" @error="error"
+      @timeupdate="updateTime"
+     >
   
             </audio>
   
@@ -251,7 +254,7 @@
   
   import animations from 'create-keyframe-animation'
   
-  
+  import progressbar from 'base/progress-bar/progress-bar'
   
   export default {
   
@@ -261,7 +264,8 @@
   
       return {
   
-        songReady: false
+        songReady: false,
+        currentTime:0
   
   
   
@@ -299,7 +303,9 @@
       disableCls() {
         return this.songReady ? '' : 'disable'
       },
-  
+      percent() {
+        return this.currentTime / this.currentSong.duration
+      },
       ...mapGetters([
   
         'fullScreen',
@@ -441,7 +447,25 @@
         this.songReady = true
   
       },
-  
+      updateTime(e){
+        this.currentTime = e.target.currentTime
+      },
+      format(interval){
+        //  | 0 向下取整
+        interval = interval | 0;
+        const minute = interval/60 | 0 
+        const second = this._pad(interval % 60  | 0 );
+        return `${minute} :  ${second} ` 
+
+      },
+      _pad(num,n=2){
+        let len  = num.toString().length
+        while(len < n ){
+          num = '0' + num
+          len++
+        }
+        return num 
+      },
       enter(el, done) {
   
         const {
@@ -588,6 +612,9 @@
   
       })
   
+    },
+    components:{
+      progressbar
     }
   
   }

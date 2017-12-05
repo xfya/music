@@ -156,4 +156,15 @@ name-entery-active, name-leave-active{}
 name-enter,name-leave-to{}
 
 
+###    往前 补 0 
+      _pad(num,n=2){
+        let len  = num.toString().length
+        while(len < n ){
+          num = '0' + num
+          len++
+        }
+        return num 
+      },
+
+
 
