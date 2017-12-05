@@ -103,7 +103,7 @@
   
             <div class="progress-bar-wrapper">
   
-              <progressbar :percent="percent"></progressbar>
+              <progressbar @percentChange='onProgressBarChange' :percent="percent"></progressbar>
 
             </div>
 
@@ -202,11 +202,9 @@
         <div class="control">
   
           <!--阻止冒泡-->
-  
-  
-  
-          <i style="top:15px;right:52px;" @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
-  
+          <progresscirle :radius="radius" :percent="percent">
+                <i  @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
+          </progresscirle>
         </div>
   
         <div class="control">
@@ -255,6 +253,7 @@
   import animations from 'create-keyframe-animation'
   
   import progressbar from 'base/progress-bar/progress-bar'
+  import progresscirle from 'base/progress-cirle/progress-cirle'
   
   export default {
   
@@ -263,10 +262,10 @@
     data() {
   
       return {
-  
+        radius:32,
         songReady: false,
         currentTime:0
-  
+
   
   
       }
@@ -458,6 +457,13 @@
         return `${minute} :  ${second} ` 
 
       },
+      onProgressBarChange(percent){
+        const currentTime = this.currentSong.duration * percent
+        this.$refs.audio.currentTime = currentTime
+        if (!this.playing) {
+          this.togglePlaying()
+        }        
+      },
       _pad(num,n=2){
         let len  = num.toString().length
         while(len < n ){
@@ -614,7 +620,8 @@
   
     },
     components:{
-      progressbar
+      progressbar,
+      progresscirle
     }
   
   }
@@ -851,7 +858,7 @@
         .icon-mini
           font-size: 32px
           position: absolute
-          
+          left:-1
           top: 0
 
   @keyframes rotate
