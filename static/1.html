@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="xfa-newslist">
+        <li>1</li>
+        <li>1</li>
+        <li>1</li>
+        <li>1</li>
+        <li>1</li>
+        <li>1</li>
+    </div>
+    <script>
+        var timer = null;
+
+        function auto() {
+            function prevauto(obj) {
+                if (obj.prev() && (obj.prev().width() == 302 || obj.prev().width() == 616)) {
+                    obj.prev().before(obj);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            function nextauto(obj) {
+                if (obj.next() && (obj.next().width() == 302 || obj.next().width() == 616)) {
+                    obj.next().after(obj);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            $(function() {
+                var pagenum = 2;
+                var startnum = $(".xfa-newslist li").length - 17; //1+(17*(pagenum-1));//起始li
+                var endnum = $(".xfa-newslist li").length; //17+(17*(pagenum-1));//结束li
+
+                $(".xfa-newslist li").slice(startnum, endnum).each(function() {
+                    if ($(this).offset().left < 250 && $(this).prev().offset().left < 564) {
+
+                        if ($(this).width() == 616 && $(this).prev().width() == 302) {
+                            prevauto($(this));
+                        } else {
+                            if ($(this).width() == 616 && $(this).next().width() == 302) {
+                                nextauto($(this));
+                            }
+                        }
+                    }
+                })
+
+            })
+            clearInterval(timer);
+        }
+        // timer = setInterval(auto, 20);
+
+        $(".xfa-newslist li").slice(1, 5).each(function() {
+            // console.log($(this))
+            console.log($(this).width())
+        })
+    </script>
+</body>
+
+</html>

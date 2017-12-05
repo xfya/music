@@ -1,6 +1,7 @@
 <template>
 
     <div class='player' v-show="playList.length > 0">
+       <img alt="" :src="currentSong.image" width="40" height="40" >
       <transition name="normal"
             @enter="enter"
             @after-enter="afterEnter"
@@ -16,8 +17,8 @@
 
              <div class="top">
                    <div class="back" @click="back">
-                    <i class="icon-back"></i>
-                  </div>
+                      <i class="icon-back"></i>
+                    </div>
                   <h1 class="title" v-html="currentSong.name"></h1>
                   <h2 class="subtitle" v-html="currentSong.singer"></h2>
              </div>
@@ -27,8 +28,8 @@
                  <div class="middle-l" ref="middleL">
 
                     <div class="cd-wrapper" ref="cdWrapper">
-                      <div class="cd" >
-                        <img :src="currentSong.image" alt="" class="image">
+                      <div class="cd"  :class="cdCls">
+                        <img  :src="currentSong.image" alt="" class="image">
                       </div>
                     </div>  
 
@@ -41,6 +42,55 @@
                  </div>
               </div>
               <!--  -->
+              <!-- bottom  start  -->
+                    <!--底部按钮控制部分-->
+                 <div class="bottom">
+                    <div class="dot-wrapper">
+                      <span class="dot" ></span>
+                      <span class="dot" ></span>
+                    </div>
+
+
+                  <div class="progress-wrapper">
+                    <span class="time time-l">
+                      
+                    </span>
+                    <!--播放进度条-->
+                    <div class="progress-bar-wrapper">
+                      
+                    </div>
+                    <span class="time time-r">
+                    
+                    </span>
+                  </div>
+
+
+                    <div class="operators">
+                        <div class="icon i-left" >
+                          <i class="icon-sequence"></i>
+                        </div>
+                          <div class="icon i-left" >
+                            <i class="icon-prev" ></i>
+                          </div>
+                        <div class="icon i-center" >
+                          <i :class="palyIcon" @click="togglePlaying"></i>
+                        </div>
+                 
+                        <div class="icon i-right" >
+                                  <i class="icon-next"></i>
+                         </div>
+                         <div class="icon i-right">
+                             <i  class="icon   icon-not-favorite" >
+                                
+                               </i>
+                         </div>
+                        
+                    </div>
+                 </div>
+              <!-- bottom end  -->
+
+
+              
         </div>
       </transition>  
       <transition name="mini">
@@ -48,7 +98,7 @@
      
         <div class="mini-player"  @click="open" v-show="!fullScreen">
              <div class="icon">
-              <img alt="" :src="currentSong.image" width="40" height="40" >
+              <img alt="" :class="cdCls" :src="currentSong.image" width="40" height="40" >
             </div>
             <div class="text">
               <h2 class="name" v-html="currentSong.name"></h2>
@@ -58,6 +108,7 @@
              <div class="control">
               <!--阻止冒泡-->
             
+             <i style="top:15px;right:52px;"  @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
             </div>
             <div class="control">
               <i class="icon-playlist"></i>
@@ -65,13 +116,22 @@
 
         </div>
       </transition>
+
+          <audio :src="currentSong.url" 
+              ref="audio" 
+
+            >
+          </audio>
     </div>
 
  </template>
 
 <script>
+  import { prefixStyle } from 'common/js/dom'
+ const transform = prefixStyle('transform')
     import { mapGetters, mapMutations, mapActions } from 'vuex'
     import animations from 'create-keyframe-animation'
+    
     export default {
 
         data() {
@@ -80,7 +140,20 @@
 
             }
         },
+         mounted(){
+          console.log(this.currentSong)
+          console.log(this.playList.length)
+        },
         computed:{
+          cdCls() {
+            return this.playing ? 'play' : 'pause'
+          },
+          palyIcon(){
+             return this.playing ? 'icon-pause' : 'icon-play'
+          },
+          miniIcon() {
+            return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+          },
             ...mapGetters([
                 'fullScreen',
                 'playing',
@@ -90,6 +163,23 @@
             ]),
            
         },
+        watch:{
+          currentSong(){
+            this.$nextTick(()=>{
+              this.$refs.audio.play()
+            })
+
+          },
+          playing(newPlaying){
+           const audio = this.$refs.audio
+            this.$nextTick(()=>{
+               newPlaying?audio.play():audio.pause()
+
+            })
+          
+         
+          }
+        },
         methods:{
           back(){
             this.setFullScreen(false)
@@ -97,20 +187,72 @@
           open(){
             this.setFullScreen(true)
           },
+          togglePlaying(){
+            this.setPlayingState(!this.playing)  
+          },
           enter(el,done){
+            const  {x,y , scale} = this._getPosAndScale()
+            let  animation = {
+                       0: {
+                        transform: `translate3d(${x}px,${y}px,0) scale(${scale})`
+                      },
+                      60: {
+                        transform: `translate3d(0,0,0) scale(1.1)`
+                      },
+                      100: {
+                        transform: `translate3d(0,0,0) scale(1)`
+                      }
+            }
 
+
+                   animations.registerAnimation({
+                    name: 'move',
+                    animation,
+                    presets: {
+                      duration: 400,
+                      easing: 'linear'
+                    }
+                  })
+
+                  animations.runAnimation(this.$refs.cdWrapper, 'move', done)
           },
           afterEnter(){
-
+             animations.unregisterAnimation('move')
+              this.$refs.cdWrapper.style.animation = ''
           },
           leave(el,done){
+            this.$refs.cdWrapper.style.transition = 'all 0.4s'
+            const {x, y, scale} = this._getPosAndScale()
+            this.$refs.cdWrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`
+            this.$refs.cdWrapper.addEventListener('transitionend', done)
 
           },
           afterLeave(){
-
+              this.$refs.cdWrapper.style.transition = ''
+              this.$refs.cdWrapper.style[transform] = ''
+          },
+           _getPosAndScale() {
+            // 左下角小图片初始位置
+            const targetWidth = 40
+            const paddingLeft = 40
+            const paddingBottom = 30
+            // 中间大图片距离顶部位置
+            const paddingTop = 80
+            // 中间图片宽度
+            const width = window.innerWidth * 0.8
+            // 缩放尺度
+            const scale = targetWidth / width
+            const x = -(window.innerWidth / 2 - paddingLeft)
+            const y = window.innerHeight - paddingTop - width / 2 - paddingBottom
+            return {
+              x,
+              y,
+              scale
+            }
           },
            ...mapMutations({
-               setFullScreen: 'SET_FULL_SCREEN'
+               setFullScreen: 'SET_FULL_SCREEN',
+               setPlayingState:"SET_PLAYING_STATE"
            })
         }
     }
@@ -347,7 +489,7 @@
         .icon-mini
           font-size: 32px
           position: absolute
-          left: 0
+          
           top: 0
 
   @keyframes rotate
