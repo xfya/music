@@ -88,7 +88,7 @@
           </div>
   
   
-  
+
   
   
           <div class="progress-wrapper">
@@ -121,9 +121,9 @@
   
           <div class="operators">
   
-            <div class="icon i-left">
+            <div class="icon i-left" @click = "changeMode">
   
-              <i class="icon-sequence"></i>
+              <i :class="iconMode" class="icon-sequence"></i>
   
             </div>
   
@@ -224,6 +224,7 @@
     <audio :src="currentSong.url" ref="audio"
      @canplay="ready" @error="error"
       @timeupdate="updateTime"
+         @ended="ended"
      >
   
             </audio>
@@ -232,6 +233,9 @@
 </template>
 
 <script>
+
+  import { playMode } from 'common/js/config'
+  import { shuffle } from 'common/js/util'
   import {
   
     prefixStyle
@@ -254,7 +258,8 @@
   
   import progressbar from 'base/progress-bar/progress-bar'
   import progresscirle from 'base/progress-cirle/progress-cirle'
-  
+  import Lyric from 'lyric-parser'
+
   export default {
   
   
@@ -264,6 +269,7 @@
       return {
         radius:32,
         songReady: false,
+        currentLyric:'',
         currentTime:0
 
   
@@ -274,9 +280,9 @@
   
     mounted() {
   
-      console.log(this.currentSong)
+      // console.log(this.currentSong)
   
-      console.log(this.playList.length)
+      // console.log(this.playList.length)
   
     },
   
@@ -287,7 +293,9 @@
         return this.playing ? 'play' : 'pause'
   
       },
-  
+      iconMode() {
+        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+      },
       palyIcon() {
   
         return this.playing ? 'icon-pause' : 'icon-play'
@@ -308,13 +316,13 @@
       ...mapGetters([
   
         'fullScreen',
-  
+        'sequenceList',
         'playing',
   
         'currentIndex',
   
         'playList',
-  
+        'mode',
         'currentSong'
   
       ]),
@@ -325,11 +333,14 @@
   
     watch: {
   
-      currentSong() {
-  
+      currentSong(newSong,oldSong) {
+        if(newSong.id ==oldSong.id ){
+          return ;
+        }
         this.$nextTick(() => {
   
           this.$refs.audio.play()
+          this.currentSong.getLyric()
   
         })
   
@@ -364,7 +375,18 @@
         this.setFullScreen(false)
   
       },
-  
+      getLyric(){
+        this.currentSong.getLyric().then(lyric => {
+          this.currentLyric = new Lyric(lyric, this.handleLyric)
+          if (this.playing) {
+            this.currentLyric.play()
+          }
+        }).catch(() => {
+          this.currentLyric = null
+          this.currentLineNum = 0
+          this.playingLyric = ''
+        })
+      },
       open() {
   
         this.setFullScreen(true)
@@ -569,7 +591,25 @@
         this.$refs.cdWrapper.style[transform] = ''
   
       },
-  
+      changeMode(){
+        const mode = (this.mode + 1) %3;
+        this.setPlayMode(mode)
+        let  list = null;
+        if(mode == playMode.random){
+         list = shuffle(this.sequenceList)
+        }else{
+          list = this.sequenceList
+        }
+        // console.log(mode,' ==' ,playMode.random , list,'list-------')
+        this._resetCurrentIndex(list)
+        this.setPlayList(list)
+      },
+      _resetCurrentIndex(list){
+        let index = list.findIndex(item=>{
+          return item.id = this.currentSong.id
+        })
+        this.setCurrentInex(index)
+      },
       _getPosAndScale() {
   
         // 左下角小图片初始位置
@@ -607,12 +647,27 @@
         }
   
       },
-  
+     ended() {
+        if (this.mode === playMode.loop) {
+          this.loop()
+        } else {
+          this.next()
+        }
+      },
+      loop() {
+        this.$refs.audio.currentTime = 0
+        this.$refs.audio.play()
+
+        // 循环播放 歌词回到开始的时候
+
+      },
       ...mapMutations({
   
         setFullScreen: 'SET_FULL_SCREEN',
   
         setCurrentInex: 'SET_CURRENT_INDEX',
+        setPlayMode: 'SET_PLAY_MODE',
+        setPlayList: 'SET_PLAYLIST',
   
         setPlayingState: "SET_PLAYING_STATE"
   

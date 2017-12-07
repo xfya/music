@@ -8,7 +8,9 @@ const state = {
     fullScreen: false,
     playList: [],
     sequenceList: [],
-    mode: playMode,
+    mode: playMode.sequence,
+    // 推荐列表详情 Object
+    disc: {},
     currentIndex: -1
 }
 
