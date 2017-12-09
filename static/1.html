@@ -6,66 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.2&key=b370d74a34b2e08a2ddf8b0f2a3e478e"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        #container,
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="xfa-newslist">
-        <li>1</li>
-        <li>1</li>
-        <li>1</li>
-        <li>1</li>
-        <li>1</li>
-        <li>1</li>
-    </div>
+    <div id="container"></div>
     <script>
-        var timer = null;
+        var map = new AMap.Map('container');
+        var map = new AMap.Map('container', {
+            zoom: 10,
+            center: [116.39, 39.9] //new AMap.LngLat(116.39,39.9)
+        });
 
-        function auto() {
-            function prevauto(obj) {
-                if (obj.prev() && (obj.prev().width() == 302 || obj.prev().width() == 616)) {
-                    obj.prev().before(obj);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
+        AMap.plugin(['AMap.ToolBar', 'AMap.AdvancedInfoWindow'], function() {
+            //创建并添加工具条控件
+            var toolBar = new AMap.ToolBar();
+            map.addControl(toolBar);
+            //创建高级信息窗体并在指定位置打开
+            var infowindow = new AMap.AdvancedInfoWindow({
+                content: '<div class="info-title">高德地图</div><div class="info-content">' +
+                    '<img src="http://webapi.amap.com/images/amap.jpg">' +
+                    '高德是中国领先的数字地图内容、导航和位置服务解决方案提供商。<br>' +
+                    '<a target="_blank" href="http://mobile.amap.com/">点击下载高德地图</a></div>',
+                offset: new AMap.Pixel(0, -30)
+            });
+            infowindow.open(map, [116.480983, 39.989628]);
+        })
 
-            function nextauto(obj) {
-                if (obj.next() && (obj.next().width() == 302 || obj.next().width() == 616)) {
-                    obj.next().after(obj);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
 
-            $(function() {
-                var pagenum = 2;
-                var startnum = $(".xfa-newslist li").length - 17; //1+(17*(pagenum-1));//起始li
-                var endnum = $(".xfa-newslist li").length; //17+(17*(pagenum-1));//结束li
-
-                $(".xfa-newslist li").slice(startnum, endnum).each(function() {
-                    if ($(this).offset().left < 250 && $(this).prev().offset().left < 564) {
-
-                        if ($(this).width() == 616 && $(this).prev().width() == 302) {
-                            prevauto($(this));
-                        } else {
-                            if ($(this).width() == 616 && $(this).next().width() == 302) {
-                                nextauto($(this));
-                            }
-                        }
-                    }
-                })
-
-            })
-            clearInterval(timer);
-        }
-        // timer = setInterval(auto, 20);
-
-        $(".xfa-newslist li").slice(1, 5).each(function() {
-            // console.log($(this))
-            console.log($(this).width())
+        AMap.service('AMap.Geocoder', function() { //回调函数
+            //实例化Geocoder
+            geocoder = new AMap.Geocoder({
+                city: "010" //城市，默认：“全国”
+            });
+            //TODO: 使用geocoder 对象完成相关功能
         })
     </script>
 </body>

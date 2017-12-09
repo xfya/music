@@ -38,3 +38,22 @@ export function getDiscList() {
         //     })
         // return jsonp(url, data, options)
 }
+
+
+
+export function getSongList(disstid) {
+    const url = 'http://localhost:3002/api/getSongList'
+
+    const data = Object.assign({}, commonParams, {
+        disstid,
+        type: 1,
+        json: 1,
+        utf8: 1,
+        onlysong: 0,
+        platform: 'yqq',
+        hostUin: 0,
+        needNewCode: 0
+    })
+    return jsonp(url, data, options)
+
+}
